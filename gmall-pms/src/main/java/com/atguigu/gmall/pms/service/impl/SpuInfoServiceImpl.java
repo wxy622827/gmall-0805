@@ -1,6 +1,11 @@
 package com.atguigu.gmall.pms.service.impl;
 
-import com.atguigu.gmall.pms.dao.*;
+import com.atguigu.core.bean.PageVo;
+import com.atguigu.core.bean.Query;
+import com.atguigu.core.bean.QueryCondition;
+import com.atguigu.gmall.pms.dao.SkuInfoDao;
+import com.atguigu.gmall.pms.dao.SpuInfoDao;
+import com.atguigu.gmall.pms.dao.SpuInfoDescDao;
 import com.atguigu.gmall.pms.entity.*;
 import com.atguigu.gmall.pms.feign.GmallSmsClient;
 import com.atguigu.gmall.pms.service.*;
@@ -8,56 +13,50 @@ import com.atguigu.gmall.pms.vo.BaseAttrValueVO;
 import com.atguigu.gmall.pms.vo.SkuInfoVO;
 import com.atguigu.gmall.pms.vo.SpuInfoVO;
 import com.atguigu.gmall.sms.vo.SaleVO;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import io.seata.spring.annotation.GlobalTransactional;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.atguigu.core.bean.PageVo;
-import com.atguigu.core.bean.Query;
-import com.atguigu.core.bean.QueryCondition;
-
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
+import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.amqp.core.AmqpTemplate;
+
+
+import javax.annotation.Resource;
 
 
 @Service("spuInfoService")
 public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> implements SpuInfoService {
 
-    @Autowired
+   @Resource
     private SpuInfoDescDao descDao;
 
-    @Autowired
+    @Resource
     private ProductAttrValueService attrValueService;
 
-    @Autowired
+    @Resource
     private SkuInfoDao skuInfoDao;
 
-    @Autowired
+    @Resource
     private SkuImagesService imagesService;
 
-    @Autowired
+    @Resource
     private SkuSaleAttrValueService saleAttrValueService;
 
-    @Autowired
+    @Resource
     private GmallSmsClient smsClient;
 
-    @Autowired
+    @Resource
     private SpuInfoDescService descService;
-
+    @Resource
+    private AmqpTemplate amqpTemplate;
     @Override
     public PageVo queryPage(QueryCondition params) {
         IPage<SpuInfoEntity> page = this.page(
@@ -117,9 +116,13 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
 
 //        FileInputStream inputStream = new FileInputStream("xxxx");
 
-//        int i = 1 / 0;
-
-    }
+      sendMsg(spuId, "insert");
+//
+ }
+//
+        private void sendMsg(Long spuId, String type) {
+        this.amqpTemplate.convertAndSend("GMALL-PMS-EXCHANGE", "item." + type, spuId);
+   }
 
     private void saveSkuAndSales(SpuInfoVO spuInfoVO, Long spuId) {
         List<SkuInfoVO> skus = spuInfoVO.getSkus();

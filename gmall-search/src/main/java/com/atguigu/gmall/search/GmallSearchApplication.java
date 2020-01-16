@@ -1,3 +1,4 @@
+
 package com.atguigu.gmall.search;
 
 import org.springframework.boot.SpringApplication;

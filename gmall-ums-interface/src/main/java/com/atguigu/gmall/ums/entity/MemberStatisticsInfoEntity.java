@@ -4,9 +4,8 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.math.BigDecimal;
 import java.io.Serializable;
-import java.util.Date;
+import java.math.BigDecimal;
 import lombok.Data;
 
 /**

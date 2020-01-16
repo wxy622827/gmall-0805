@@ -20,10 +20,10 @@ public class OssController {
 
     @GetMapping("policy")
     public Resp<Object> policy(){
-        String accessId = "LTAI4FhoG7QTmhkyCgUa4taW"; // 请填写您的AccessKeyId。
-        String accessKey = "Q1tvawKEr4ShKe5DpUb7A3I00HPnCX"; // 请填写您的AccessKeySecret。
-        String endpoint = "oss-cn-shanghai.aliyuncs.com"; // 请填写您的 endpoint。
-        String bucket = "ggmall"; // 请填写您的 bucketname 。
+        String accessId = "LTAI4FeNDVd7u9g2xxCZ2yKc"; // 请填写您的AccessKeyId。
+        String accessKey = "Q4TstHuaEN0cIuk6LhwiA5utVNLzLZ"; // 请填写您的AccessKeySecret。
+        String endpoint = "oss-cn-beijing.aliyuncs.com"; // 请填写您的 endpoint。
+        String bucket = "gggggmal"; // 请填写您的 bucketname 。
         String host = "https://" + bucket + "." + endpoint; // host的格式为 bucketname.endpoint
         // callbackUrl为 上传回调服务器的URL，请将下面的IP和Port配置为您自己的真实信息。
 //        String callbackUrl = "http://88.88.88.88:8888";
